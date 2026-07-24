@@ -1,13 +1,5 @@
-"""
-PROJECT 6 - PART 1: TRAIN AND SAVE THE MODEL
-===============================================
-GOAL: Before we can deploy a model with Docker, we need an actual trained
-model saved to disk. This script:
-  1. Generates a synthetic CSV dataset (customer purchase prediction)
-  2. Runs quick EDA
-  3. Trains a classifier
-  4. SAVES the trained model as a .pkl file using joblib
-"""
+
+#PROJECT 6 - PART 1: TRAIN AND SAVE THE MODEL
 
 import pandas as pd
 import numpy as np
@@ -18,9 +10,9 @@ import joblib  # used to save/load Python objects (our trained model) to/from di
 
 np.random.seed(42)
 
-# ---------------------------------------------------------
+
 # STEP 1: GENERATE AND SAVE A SYNTHETIC DATASET AS CSV
-# ---------------------------------------------------------
+
 n = 2000
 df = pd.DataFrame({
     "age": np.random.randint(18, 65, n),
@@ -42,18 +34,17 @@ df["will_purchase"] = (purchase_score > purchase_score.median()).astype(int)
 df.to_csv("customer_data.csv", index=False)
 print(f"Saved customer_data.csv with {len(df)} rows")
 
-# ---------------------------------------------------------
+
 # STEP 2: QUICK EDA
-# ---------------------------------------------------------
 df = pd.read_csv("customer_data.csv")
 print(f"\nDataset shape: {df.shape}")
 print(f"Missing values: {df.isnull().sum().sum()} total missing cells")
 print(f"Purchase rate: {df['will_purchase'].mean():.1%}")
 print(f"\nFeature summary:\n{df.describe().round(2)}")
 
-# ---------------------------------------------------------
+
 # STEP 3: TRAIN THE MODEL
-# ---------------------------------------------------------
+
 feature_cols = ["age", "time_on_site_minutes", "pages_viewed", "past_purchases", "cart_value"]
 X = df[feature_cols]
 y = df["will_purchase"]
@@ -65,17 +56,17 @@ X_train, X_test, y_train, y_test = train_test_split(
 model = RandomForestClassifier(n_estimators=200, max_depth=6, random_state=42)
 model.fit(X_train, y_train)
 
-# ---------------------------------------------------------
+
 # STEP 4: EVALUATE
-# ---------------------------------------------------------
+
 preds = model.predict(X_test)
 acc = accuracy_score(y_test, preds)
 print(f"\nTest Accuracy: {acc:.3f}")
 print(classification_report(y_test, preds, target_names=["No Purchase", "Purchase"]))
 
-# ---------------------------------------------------------
+
 # STEP 5: SAVE THE TRAINED MODEL TO DISK
-# ---------------------------------------------------------
+
 joblib.dump(model, "purchase_model.pkl")
 print("\nSaved trained model as purchase_model.pkl")
 
