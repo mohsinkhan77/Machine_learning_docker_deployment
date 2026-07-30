@@ -1,5 +1,5 @@
 
-#PROJECT 6 - PART 1: TRAIN AND SAVE THE MODEL
+PART 1: TRAIN AND SAVE THE MODEL
 
 import pandas as pd
 import numpy as np
